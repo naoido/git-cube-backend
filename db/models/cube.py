@@ -13,7 +13,7 @@ class Cube(Base):
     cube_name = Column(String(100), nullable=False)
     created_at = Column(Date, nullable=False, default=datetime.now())
 
-class Collet_cube(Base):
+class Collect_cube(Base):
     __table_name__ = 'collect_cubes'
     id = Column(Integer, primary_key=True)
     cube_id = Column(Integer, ForeignKey(Cube.cube_id), nullable=False)
