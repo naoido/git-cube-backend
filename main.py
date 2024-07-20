@@ -1,7 +1,7 @@
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import router
-import uvicorn
 
 app = FastAPI()
 
@@ -22,7 +22,7 @@ app.include_router(router.router, prefix="/api")
 
 @app.get("/")
 def health():
-    return "work!"
+    return {"status": "ok"}
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="localhost", reload=True)
