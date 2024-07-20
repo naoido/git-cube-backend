@@ -20,5 +20,9 @@ app.add_middleware(
 
 app.include_router(router.router, prefix="/api")
 
+@app.get("/")
+def health():
+    return "work!"
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="localhost", reload=True)
