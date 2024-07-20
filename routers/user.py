@@ -4,7 +4,7 @@ from db.db import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.engine import Result
 from sqlalchemy import update, select
-import uuid4
+import uuid
 from datetime import timedelta, datetime, timezone
 from typing import Optional
 from db.models import user, session
@@ -25,7 +25,7 @@ async def regist_user(github_id, user_id, db : AsyncSession = Depends(get_db)):
 @user_router.post("/sessions")
 async def create_sessions(user_id, db: AsyncSession = Depends(get_db)):
 
-    session_id = str(uuid4())
+    session_id = str(uuid())
 
     session_dict = {
         "session_id":session_id,
