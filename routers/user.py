@@ -22,14 +22,18 @@ async def regist_user(github_id, user_id, db : AsyncSession = Depends(get_db)):
         "contributes": 0,
     }
 
+    use = user.User(**user_dict)
+    db.add(use)
+    await db.commit()
+
 @user_router.post("/sessions")
 async def create_sessions(user_id, db: AsyncSession = Depends(get_db)):
 
-    session_id = str(uuid())
+    session_id = str(uuid.uuid4())
 
     session_dict = {
         "session_id":session_id,
-        "user_id":id,
+        "user_id":user_id,
     }
     
     user_sessions = session.Session(**session_dict)

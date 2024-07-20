@@ -49,8 +49,9 @@ async def regist_memo(github_id, context, db : AsyncSession = Depends(get_db)):
         "user_id" : user_id,
         "context" : context,
     }
-
-    db.add(**memo_dict)
+    
+    mem = memo.Memo(**memo_dict)
+    db.add(mem)
     await db.commit()
 
 @memo_router.delete("/{todo_id}")
