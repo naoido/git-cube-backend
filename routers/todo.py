@@ -12,7 +12,7 @@ todo_router = APIRouter()
 async def get_todos(github_id, db : AsyncSession = Depends(get_db)):
 
     result : Result = await db.execute(
-        select(todos.Todo.context)
+        select(todos.Todo.todo_id, todos.Todo.context, todos.Todo.is_success)
         .join(user.User, todos.Todo.user_id == user.User.user_id)
         .where(user.User.github_id == github_id)
         .where(todos.Todo.user_id == user.User.user_id)
@@ -51,8 +51,19 @@ async def regist_todos(github_id, context, db : AsyncSession = Depends(get_db)):
     }
     todo = todos.Todo(**todo_dict)
     db.add(todo)
-    db.commit()
+    await db.commit()
 
-# @todo_router.put("/{todo_id}")
-# async def change_is_success(github_id, todo_id, db : AsyncSession = Depends(get_db)):
-#     await db.execute()
+@todo_router.put("/{todo_id}")
+async def change_is_success(github_id, todo_id, db : AsyncSession = Depends(get_db)):
+    user_ = await db.execute(select(user.User.user_id)
+                            .where(user.User.github_id == github_id))
+    user_ = user_.fetchall()
+    user_id = user_[0].user_id
+
+    await db.execute(update (todos.Todo.is_success)
+                    .where(todos.Todo.user_id == user_id)
+                    .where(todos.Todo.todo_id == todo_id))
+    await db.commit()
+
+# @todo_router.delete("/{todo_id}")
+# async def delete_todo(github_id, todo_id, db:)
