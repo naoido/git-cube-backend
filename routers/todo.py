@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from db.db import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.engine import Result
-from sqlalchemy import select, update, desc
+from sqlalchemy import select, update, desc, delete
 
 from db.models import user, todos
 
@@ -65,5 +65,14 @@ async def change_is_success(github_id, todo_id, db : AsyncSession = Depends(get_
                     .where(todos.Todo.todo_id == todo_id))
     await db.commit()
 
-# @todo_router.delete("/{todo_id}")
-# async def delete_todo(github_id, todo_id, db:)
+@todo_router.delete("/{todo_id}")
+async def delete_todo(github_id, todo_id, db : AsyncSession = Depends(get_db)):
+    user_ = await db.execute(select(user.User.user_id)
+                            .where(user.User.github_id == github_id))
+    user_ = user_.fetchall()
+    user_id = user_[0].user_id
+
+    await db.execute(delete (todos.Todo)
+                    .filler (todos.Todo.todo_id == todo_id, todos.Todo.user_id == user_id)
+                    )
+    await db.commit()
