@@ -12,4 +12,4 @@ class User(Base):
     created_at = Column(Date, nullable=False, default=datetime.now())
     deleted_at = Column(Date, nullable=True)
     update_at = Column(Date, nullable=True)
-    contributes = Column(Integer, nullable=True)
+    contributes = Column(Integer, nullable=False)
