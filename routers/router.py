@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-
+import requests
 from routers import user, cube, memo, todo
 from starlette.responses import RedirectResponse
 import httpx
@@ -34,4 +34,8 @@ async def github_code(code: str):
     async with httpx.AsyncClient() as client:
         headers.update({'Authorization':f'Bearer {access_token}'})
         response = await client.get('https://api.github.com/user', headers=headers)
-    return response.json()
+    text = response.json()
+    github_id = text["login"]
+    user_id = text["id"]
+    requests.post(f"http://localhost:8000/api/user?github_id={github_id}&user_id={user_id}")
+    requests.post(f"http://localhost:8000/api/user/sessions?user_id={user_id}")
