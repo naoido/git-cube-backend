@@ -9,9 +9,6 @@ class User(Base):
     __tablename__ = 'users'
     user_id = Column(Integer, primary_key=True)
     GitHub_id = Column(String(20), nullable=False)
-    box_id = Column(Integer, nullable=False)
+    created_at = Column(Date, nullable=False, default=datetime.now())
     deleted_at = Column(Date, nullable=True)
     update_at = Column(Date, nullable=True)
-    created_at = Column(Date, nullable=False, default=datetime.now())
-
-
