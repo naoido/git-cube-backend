@@ -7,7 +7,7 @@ from sqlalchemy import select, desc, delete
 from db.models import user, memo
 
 
-memo_router = APIRouter
+memo_router = APIRouter()
 
 
 @memo_router.get("")
