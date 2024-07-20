@@ -60,9 +60,10 @@ async def change_is_success(github_id, todo_id, db : AsyncSession = Depends(get_
     user_ = user_.fetchall()
     user_id = user_[0].user_id
 
-    await db.execute(update (todos.Todo.is_success)
+    await db.execute(update (todos.Todo)
                     .where(todos.Todo.user_id == user_id)
-                    .where(todos.Todo.todo_id == todo_id))
+                    .where(todos.Todo.todo_id == todo_id)
+                    .values(is_success =~ todos.Todo.is_success))
     await db.commit()
 
 @todo_router.delete("/{todo_id}")
@@ -73,6 +74,6 @@ async def delete_todo(github_id, todo_id, db : AsyncSession = Depends(get_db)):
     user_id = user_[0].user_id
 
     await db.execute(delete (todos.Todo)
-                    .filler (todos.Todo.todo_id == todo_id, todos.Todo.user_id == user_id)
+                    .filter (todos.Todo.todo_id == todo_id, todos.Todo.user_id == user_id)
                     )
     await db.commit()
