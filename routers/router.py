@@ -37,6 +37,8 @@ async def github_code(code: str):
     text = response.json()
     github_id = text["login"]
     user_id = text["id"]
-    requests.post(f"http://localhost:8000/api/user?github_id={github_id}&user_id={user_id}")
+    url = text["url"]
+    requests.post(f"http://localhost:8000/api/user?github_id={github_id}&user_id={user_id}&repo_url={url}")
     requests.post(f"http://localhost:8000/api/user/sessions?user_id={user_id}")
     return RedirectResponse("http://localhost:3000/")
+ 
