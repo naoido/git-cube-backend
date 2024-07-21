@@ -2,15 +2,13 @@ from fastapi import Depends, APIRouter, HTTPException, Response
 from fastapi.responses import JSONResponse
 from db.db import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.engine import Result
-from sqlalchemy import update, select
+from sqlalchemy import select
 import uuid
 from datetime import timedelta, datetime, timezone
-from typing import Optional
 from db.models import user, session
 import json
-
-
+from routers.session import get_user_id
+import requests
 user_router = APIRouter()
 
 @user_router.post("")
@@ -26,8 +24,28 @@ async def regist_user(github_id, user_id, db : AsyncSession = Depends(get_db)):
     db.add(use)
     await db.commit()
 
+@user_router.get("/repo")
+async def get_repo(user_id = Depends(get_user_id), db : AsyncSession = Depends(get_db)):
+
+    url_list = db.execute(select (user.User.repo_url)
+                    .where (user.User.user_id == user_id)
+                    .limit(1))
+    ur_ = url_list.fetchall()
+    url  = [item for _ in ur_ for item in _]
+    text = requests.get(url)
+
+    list = []
+
+    a = text.json()
+
+    for i in range(len(a)):
+        tmp = {"repo_name":a[i]["name"]}, {"id":a[i]["id"]}
+        list.append(tmp)
+    
+    return list
+
 @user_router.post("/sessions")
-async def create_sessions(user_id, db: AsyncSession = Depends(get_db)):
+async def create_sessions(user_id = Depends(get_user_id), db: AsyncSession = Depends(get_db)):
 
     session_id = str(uuid.uuid4())
 
