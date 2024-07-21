@@ -1,14 +1,16 @@
-from fastapi import Depends, APIRouter, HTTPException, Response
-from fastapi.responses import JSONResponse
-from db.db import get_db
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-import uuid
-from datetime import timedelta, datetime, timezone
-from db.models import user, session
 import json
-from routers.session import get_user_id
+import uuid
+from datetime import datetime, timedelta, timezone
+
 import requests
+from db.db import get_db
+from db.models import session, user
+from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi.responses import JSONResponse
+from routers.session import get_user_id
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 user_router = APIRouter()
 
 @user_router.post("")
@@ -45,7 +47,7 @@ async def get_repo(user_id = Depends(get_user_id), db : AsyncSession = Depends(g
     return list
 
 @user_router.post("/sessions")
-async def create_sessions(user_id = Depends(get_user_id), db: AsyncSession = Depends(get_db)):
+async def create_sessions(user_id, db: AsyncSession = Depends(get_db)):
 
     session_id = str(uuid.uuid4())
 

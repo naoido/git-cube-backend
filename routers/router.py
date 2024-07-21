@@ -1,9 +1,8 @@
-from fastapi import APIRouter
-import requests
-from routers import user, cube, memo, todo
-from starlette.responses import RedirectResponse
 import httpx
-
+import requests
+from fastapi import APIRouter
+from routers import cube, memo, todo, user
+from starlette.responses import RedirectResponse
 
 router = APIRouter()
 
@@ -38,7 +37,7 @@ async def github_code(code: str):
     github_id = text["login"]
     user_id = text["id"]
     url = text["url"]
-    requests.post(f"http://localhost:8000/api/user?github_id={github_id}&user_id={user_id}&repo_url={url}")
+    requests.post(f"http://localhost:8000/api/user?github_id={github_id}&user_id={user_id}")
     requests.post(f"http://localhost:8000/api/user/sessions?user_id={user_id}")
-    return RedirectResponse("http://localhost:3000/")
+    return RedirectResponse("http://localhost/")
  
